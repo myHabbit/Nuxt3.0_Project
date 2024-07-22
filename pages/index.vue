@@ -1,5 +1,5 @@
 <template>
-    <div class=" w-full h-full  bg-black  ">
+    <div class=" w-full h-full  bg-black  " style="overflow-x:hidden;">
         <!-- 头部 -->
         <header class=" w-full  h-16 flex  justify-between items-center px-8 py-3 ">
             <div class=" mr-6">
@@ -48,9 +48,28 @@
                             <span class="shadow"></span>
                         </div>
                     </div>
-                    <div class=" text-base font-bold text-white px-4 py-2.5 rounded-xl cursor-pointer font-sans flex items-centerfont-semibold transition-colors duration-200 hover:bg-dark-500  h-[42px]  truncate text-clip  max-[950px]:hidden "
-                        style="background-color:rgba(33, 33, 33, .8);">
+                    <div v-if="token === ''"
+                        class=" text-base font-bold text-white px-4 py-2.5 rounded-xl cursor-pointer font-sans flex items-centerfont-semibold transition-colors duration-200 hover:bg-dark-500  h-[42px]  truncate text-clip  max-[950px]:hidden "
+                        style="background-color:rgba(33, 33, 33, .8);" @click="toLoginHandler">
                         Sign In or Create Account
+                    </div>
+                    <div v-else class=" py-2.5 flex items-center">
+                        <div class="bellOutline text-white flex items-center ">
+                            <Icon name="teenyicons:bell-outline" class=" text-xl"></Icon>
+                        </div>
+                        <el-dropdown trigger="click">
+                            <el-button type="primary">
+                                <Icon style="font-size: 20px;margin-right: 4px;" name="ri:arrow-down-s-line"></Icon>
+                                JoyfulWei <span></span>
+                            </el-button>
+                            <template #dropdown>
+                                <el-dropdown-menu>
+                                    <el-dropdown-item>Your Profile</el-dropdown-item>
+                                    <el-dropdown-item>Send feedback</el-dropdown-item>
+                                    <el-dropdown-item @click="logoutHandler">Log out</el-dropdown-item>
+                                </el-dropdown-menu>
+                            </template>
+                        </el-dropdown>
                     </div>
                 </div>
             </nav>
@@ -58,16 +77,42 @@
         <div>
             <NuxtPage />
         </div>
+        <!-- 底部 -->
+        <Footer />
     </div>
 </template>
 
 <script lang="ts" setup>
-
-
 const active: Ref<number> = ref(1)
+import { piniaStore } from '~/store/index';
+const router = useRouter()
 const drawer = ref(false)
-
-
+const store = piniaStore()
+const token: Ref<string> = ref('')
+onMounted(() => {
+    token.value = localStorage.getItem('token') as string
+})
+// 路由中间件
+definePageMeta({
+    middleware: ['redirect-to']
+})
+// 登录
+const toLoginHandler = () => {
+    token.value = localStorage.getItem('token') as string
+    if (token.value) {
+    } else {
+        router.push('/login')
+    }
+}
+// 注销
+const logoutHandler = () => {
+    ElMessage.success('注销成功')
+    localStorage.removeItem('token')
+    store.deleteToken()
+    setTimeout(() => {
+        router.push('/login')
+    }, 200);
+}
 </script>
 
 <style scoped lang="less">
@@ -157,5 +202,85 @@ const drawer = ref(false)
 :deep(.el-drawer__body) {
     padding-left: 0;
     padding-right: 0;
+}
+
+:deep(.el-dropdown) {
+    width: 100%;
+    height: 100%;
+
+    .el-button {
+        background-color: black;
+        font-weight: 700;
+        font-size: 18px;
+        border: none;
+        padding: 20px 18px;
+
+        &:hover {
+            background-color: rgba(33, 33, 33, .9);
+        }
+    }
+
+}
+
+.bellOutline {
+    padding: 12px;
+    cursor: pointer;
+    margin-right: 8px;
+
+    &:hover {
+        background-color: rgba(33, 33, 33, .9);
+        border-radius: 10px;
+    }
+}
+
+
+:global(.el-dropdown__popper.el-popper) {
+    position: absolute;
+    inset: 56px auto auto 1718px;
+    width: 162px;
+    height: auto;
+    padding: 4px;
+    transition: all .3s;
+}
+
+:global(.el-dropdown__popper.el-popper) {
+    background-color: rgba(33, 33, 33, .9);
+    border: none;
+}
+
+:global(.el-scrollbar__view) {
+    height: 100%;
+}
+
+:global(.el-dropdown__popper.el-popper[data-popper-placement^=bottom] .el-popper__arrow:before) {
+    background-color: rgba(33, 33, 33, .9);
+    border: none;
+}
+
+:global(.el-dropdown-menu) {
+    background-color: transparent;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+:global(.el-dropdown-menu__item) {
+    color: #d1d5db;
+    flex: 1;
+    border-radius: 4px;
+    font-weight: bold;
+    padding-top: 4px;
+}
+
+:global(.el-dropdown-menu__item:not(.is-disabled):hover) {
+    background-color: #5764f0;
+    color: white;
+}
+
+:global(.el-dropdown-menu__item:not(.is-disabled):focus) {
+    background-color: #5764f0;
+    color: white;
 }
 </style>

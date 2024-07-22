@@ -97,7 +97,8 @@
 </template>
 
 <script lang="ts" setup>
-// const router = useRouter()
+import {piniaStore} from '~/store/index';
+const store = piniaStore()
 // 定义登录的数据
 const userInfo: Ref<{ email: string, password: string, password2?: string }> = ref({
     email: '',
@@ -113,7 +114,6 @@ const isLogin: Ref<boolean> = ref(true)
 const loginHandler = () => {
     const { email, password } = JSON.parse(localStorage.getItem('userinfo') as string)
     if (userInfo.value.email === email.trim() && userInfo.value.password === password.trim()) {
-        ElMessage.success('登陆成功')
         $fetch('http://localhost:3000/api/login', {
             method: 'post',
             body: {
@@ -124,6 +124,7 @@ const loginHandler = () => {
             const { token } = res
             if (token) {
                 localStorage.setItem('token', token)
+                store.setToken(token)
                 ElMessage.success('登陆成功')
                 // // router.push('/')
                 setTimeout(() => {

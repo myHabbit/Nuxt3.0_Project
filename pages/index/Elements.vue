@@ -1,8 +1,9 @@
 <template>
-    <div class=" w-full  bg-black  ">
+    <div class=" w-full  bg-black border-b-2  rounded-b-[60px] shadow-[rgba(0,_0,_0,_0.1)_0px_20px_25px_-5px,_rgba(0,_0,_0,_0.04)_0px_10px_10px_-5px]  mb-12 "
+        style="border-color: rgb(53 53 53)">
         <!-- 内容 -->
-        <div class=" w-full px-5 flex">
-            <div class=" w-52 mr-4 pt-7">
+        <div class=" w-full px-5 flex ">
+            <div class=" w-52 h-[calc(100vh_-_66px)] sticky  mr-4 pt-7 overflow-auto -top-3">
                 <aside>
                     <ul class="w-full">
                         <li @click="toggleHandler(item.id)" :class="asideToggle === item.id ? 'active' : ''"
@@ -12,7 +13,7 @@
                 </aside>
             </div>
             <div class="flex-1">
-                <main class=" text-white">
+                <main class=" text-white ">
                     <div class="mt-9 mr-10 max-md:mb-2.5">
                         <h1 class="mb-1 text-3xl font-bold">Browse all</h1>
                         <p class="text-gray-400 pb-2.5 leading-6">Open-Source UI elements made with CSS or Tailwind</p>
@@ -109,6 +110,9 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                    <div class=" min-h-[1000px]">
+
                     </div>
                 </main>
             </div>
